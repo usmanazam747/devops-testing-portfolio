@@ -1,0 +1,208 @@
+stages:
+  - build
+  - test
+  - docker
+  - deploy
+  - e2e-test
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: "/certs"
+  POSTGRES_DB: ecommerce_test
+  POSTGRES_USER: test_user
+  POSTGRES_PASSWORD: test_password
+
+# Build Stage
+build:user-service:
+  stage: build
+  image: python:3.11-slim
+  script:
+    - cd services/user-service
+    - pip install -r requirements.txt
+    - echo "User service built successfully"
+  artifacts:
+    paths:
+      - services/user-service/
+    expire_in: 1 hour
+  only:
+    changes:
+      - services/user-service/**/*
+      - tests/**/*
+      - .gitlab-ci.yml
+
+# Unit Test Stage
+test:unit-user-service:
+  stage: test
+  image: python:3.11-slim
+  services:
+    - postgres:15-alpine
+  variables:
+    DATABASE_URL: postgresql://test_user:test_password@postgres:5432/ecommerce_test
+  before_script:
+    - cd services/user-service
+    - pip install -r requirements.txt
+    - pip install pytest pytest-cov pytest-flask
+  script:
+    - pytest ../../tests/unit/test_user_service.py -v --cov=app --cov-report=term --cov-report=html --cov-report=xml
+  coverage: '/TOTAL.*\s+(\d+%)$/'
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: services/user-service/coverage.xml
+    paths:
+      - services/user-service/htmlcov/
+      - services/user-service/coverage.xml
+    expire_in: 7 days
+  only:
+    changes:
+      - services/user-service/**/*
+      - tests/unit/**/*
+      - .gitlab-ci.yml
+
+# Integration Test Stage
+test:integration:
+  stage: test
+  image: python:3.11-slim
+  services:
+    - postgres:15-alpine
+    - redis:7-alpine
+  variables:
+    DATABASE_URL: postgresql://test_user:test_password@postgres:5432/ecommerce_test
+    REDIS_URL: redis://redis:6379/0
+  before_script:
+    - cd services/user-service
+    - pip install -r requirements.txt
+    - pip install pytest requests
+  script:
+    - pytest ../../tests/integration/ -v
+  artifacts:
+    reports:
+      junit: services/user-service/test-results.xml
+    expire_in: 7 days
+  dependencies:
+    - build:user-service
+
+# Code Quality
+code-quality:
+  stage: test
+  image: python:3.11-slim
+  before_script:
+    - pip install pylint flake8 black isort
+  script:
+    - cd services/user-service
+    - echo "Running code quality checks..."
+    - pylint app.py --exit-zero || true
+    - flake8 app.py --max-line-length=120 --exit-zero || true
+    - black --check app.py --line-length=120 || true
+  allow_failure: true
+
+# Security Scan
+security:dependency-scan:
+  stage: test
+  image: python:3.11-slim
+  before_script:
+    - pip install safety bandit
+  script:
+    - cd services/user-service
+    - safety check --file=requirements.txt --json || true
+    - bandit -r . -f json -o bandit-report.json || true
+  artifacts:
+    paths:
+      - services/user-service/bandit-report.json
+    expire_in: 7 days
+  allow_failure: true
+
+# Docker Build Stage
+docker:build-user-service:
+  stage: docker
+  image: docker:24-dind
+  services:
+    - docker:24-dind
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - cd services/user-service
+    - docker build -t $CI_REGISTRY_IMAGE/user-service:$CI_COMMIT_SHORT_SHA .
+    - docker build -t $CI_REGISTRY_IMAGE/user-service:latest .
+    - docker push $CI_REGISTRY_IMAGE/user-service:$CI_COMMIT_SHORT_SHA
+    - docker push $CI_REGISTRY_IMAGE/user-service:latest
+  only:
+    - main
+    - develop
+  dependencies:
+    - test:unit-user-service
+
+# Deploy to Staging
+deploy:staging:
+  stage: deploy
+  image: docker/compose:latest
+  script:
+    - echo "Deploying to staging environment..."
+    - docker-compose -f docker-compose.yml up -d
+    - echo "Waiting for services to be healthy..."
+    - sleep 30
+    - docker-compose ps
+  environment:
+    name: staging
+    url: http://staging.example.com
+  only:
+    - develop
+  when: manual
+
+# E2E Tests with Selenium
+test:e2e-selenium:
+  stage: e2e-test
+  image: python:3.11-slim
+  services:
+    - name: selenium/standalone-chrome:latest
+      alias: selenium
+  before_script:
+    - pip install selenium pytest pytest-html
+  script:
+    - cd tests/e2e
+    - pytest test_*.py -v --html=report.html --self-contained-html
+  artifacts:
+    paths:
+      - tests/e2e/report.html
+      - tests/e2e/screenshots/
+    expire_in: 7 days
+    when: always
+  dependencies:
+    - deploy:staging
+  allow_failure: true
+
+# E2E Tests with Robot Framework
+test:e2e-robot:
+  stage: e2e-test
+  image: python:3.11-slim
+  before_script:
+    - pip install robotframework robotframework-seleniumlibrary
+  script:
+    - cd tests/robot-framework
+    - robot --outputdir results .
+  artifacts:
+    paths:
+      - tests/robot-framework/results/
+    expire_in: 7 days
+    when: always
+  dependencies:
+    - deploy:staging
+  allow_failure: true
+
+# Deploy to Production
+deploy:production:
+  stage: deploy
+  image: docker/compose:latest
+  script:
+    - echo "Deploying to production environment..."
+    - docker-compose -f docker-compose.prod.yml up -d
+  environment:
+    name: production
+    url: https://example.com
+  only:
+    - main
+  when: manual
+  needs:
+    - test:e2e-selenium
+    - test:e2e-robot
