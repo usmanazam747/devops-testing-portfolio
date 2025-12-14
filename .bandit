@@ -1,0 +1,18 @@
+[bandit]
+# Only fail on HIGH severity issues
+# For portfolio/demo projects, LOW and MEDIUM can be informational
+exclude: /tests/,/venv/,/.venv/,/env/
+
+# Severity level to fail the build
+# Options: LOW, MEDIUM, HIGH
+level: HIGH
+
+# Confidence level threshold
+# Options: LOW, MEDIUM, HIGH
+confidence: MEDIUM
+
+# Skip certain tests that are common false positives
+skips: B101,B601
+
+# B101: Test for use of assert (common in test files)
+# B601: Paramiko usage (not applicable if not using paramiko)

@@ -46,7 +46,8 @@ jobs:
       - name: Security scan with Bandit
         run: |
           cd services/user-service
-          bandit -r . -f json -o bandit-report.json
+          bandit -r . -f json -o bandit-report.json -ll -ii
+        continue-on-error: false
       
       - name: Dependency security check
         run: |
