@@ -42,18 +42,16 @@ jobs:
           flake8 app.py --max-line-length=120 --exit-zero || true
           echo "Running Black check..."
           black --check app.py --line-length=120 || true
-        continue-on-error: true
       
       - name: Security scan with Bandit
         run: |
           cd services/user-service
-          bandit -r . -f json -o bandit-report.json || true
-        continue-on-error: true
+          bandit -r . -f json -o bandit-report.json
       
       - name: Dependency security check
         run: |
           cd services/user-service
-          safety check --file=requirements.txt --json || true
+          safety check --file=requirements.txt --json
         continue-on-error: true
       
       - name: Upload security reports
@@ -184,18 +182,36 @@ jobs:
       - name: Start user service
         env:
           DATABASE_URL: postgresql://test_user:test_password@localhost:5432/ecommerce_test
-          SECRET_KEY: test-secret-key
+          SECRET_KEY: test-secret-key-for-ci
           FLASK_ENV: development
         run: |
           cd services/user-service
           python app.py &
           sleep 10
       
-      - name: Run integration tests
+      - name: Wait for service health
         run: |
-          echo "Integration tests placeholder - implement when ready"
-          curl -f http://localhost:5000/health || exit 1
-        continue-on-error: true
+          timeout=30
+          elapsed=0
+          while [ $elapsed -lt $timeout ]; do
+            if curl -f http://localhost:5000/health 2>/dev/null; then
+              echo "Service is healthy"
+              exit 0
+            fi
+            sleep 2
+            elapsed=$((elapsed + 2))
+          done
+          echo "Service failed to become healthy"
+          exit 1
+      
+      - name: Run integration tests
+        env:
+          BASE_URL: http://localhost:5000
+          PYTHONPATH: ${{ github.workspace }}/services/user-service
+        run: |
+          pytest tests/integration/test_user_service_integration.py \
+            -v \
+            --junitxml=test-results-integration.xml
 
   docker-build:
     name: Build Docker Images
