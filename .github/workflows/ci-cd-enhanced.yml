@@ -144,21 +144,6 @@ jobs:
     name: Java Unit Tests (Product Service)
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:15-alpine
-        env:
-          POSTGRES_DB: ecommerce_test
-          POSTGRES_USER: test_user
-          POSTGRES_PASSWORD: test_password
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
       - uses: actions/checkout@v4
 
@@ -171,10 +156,6 @@ jobs:
 
       - name: Build and test Product Service
         working-directory: services/product-service
-        env:
-          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/ecommerce_test
-          SPRING_DATASOURCE_USERNAME: test_user
-          SPRING_DATASOURCE_PASSWORD: test_password
         run: |
           mvn clean verify \
             -Dspring.profiles.active=test \
