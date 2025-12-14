@@ -233,6 +233,21 @@ def list_users(current_user):
         'total': len(users)
     }), 200
 
+@app.route('/api/test/cleanup', methods=['DELETE'])
+def cleanup_test_data():
+    """Cleanup endpoint for testing - only available in non-production"""
+    if os.getenv('FLASK_ENV') == 'production':
+        return jsonify({'message': 'Not available in production'}), 403
+    
+    try:
+        # Delete all users (for testing only)
+        User.query.delete()
+        db.session.commit()
+        return jsonify({'message': 'Test data cleaned'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'message': f'Error cleaning data: {str(e)}'}), 500
+
 # Database initialization - create tables if they don't exist
 with app.app_context():
     db.create_all()

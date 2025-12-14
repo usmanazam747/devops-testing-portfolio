@@ -12,6 +12,18 @@ BASE_URL = os.getenv('BASE_URL', 'http://localhost:5000')
 TIMEOUT = 30  # seconds to wait for service
 
 
+@pytest.fixture(scope="function", autouse=True)
+def cleanup_database():
+    """Clean up database before each test"""
+    yield
+    # Cleanup happens after each test
+    try:
+        # Delete all test users created during tests
+        response = requests.delete(f"{BASE_URL}/api/test/cleanup")
+    except:
+        pass  # Service might not have cleanup endpoint
+
+
 @pytest.fixture(scope="module")
 def wait_for_service():
     """Wait for the service to be ready before running tests"""
@@ -28,13 +40,6 @@ def wait_for_service():
     pytest.fail(f"Service did not become ready within {TIMEOUT} seconds")
 
 
-@pytest.fixture
-def cleanup_test_user():
-    """Cleanup fixture to remove test users after tests"""
-    yield
-    # Add cleanup logic if needed (e.g., delete test users)
-
-
 class TestHealthEndpoint:
     """Test health check endpoint"""
     
@@ -48,8 +53,8 @@ class TestHealthEndpoint:
 class TestUserRegistrationIntegration:
     """Integration tests for user registration flow"""
     
-    def test_register_new_user_success(self, wait_for_service, cleanup_test_user):
-        """Test successful user registration with database persistence"""
+    def test_register_new_user_success(self, wait_for_service):
+        """Test successful user registration with database persistence""
         user_data = {
             'username': f'testuser_{int(time.time())}',
             'email': f'test_{int(time.time())}@example.com',
