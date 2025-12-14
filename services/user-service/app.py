@@ -13,7 +13,17 @@ CORS(app)
 # Configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://admin:admin123@localhost:5432/ecommerce')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
+
+# Secure SECRET_KEY handling
+SECRET_KEY = os.getenv('SECRET_KEY')
+if not SECRET_KEY:
+    if os.getenv('FLASK_ENV') == 'production':
+        raise ValueError("SECRET_KEY environment variable must be set in production!")
+    # Only for development/testing - NEVER use this in production!
+    SECRET_KEY = 'dev-secret-key-unsafe-for-demo-only'
+    print("⚠️  WARNING: Using insecure development secret key. Set SECRET_KEY env var for production!")
+
+app.config['SECRET_KEY'] = SECRET_KEY
 
 db = SQLAlchemy(app)
 

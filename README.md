@@ -99,14 +99,20 @@ devops-testing-portfolio/
 
 ```
 
+## 🌐 Live Demo
+
+🔗 **Demo URL:** [Coming Soon - Deploy to Render.com]
+
+See [Deployment Guide](docs/DEPLOY_RENDER.md) for instructions.
+
 ## 🚀 Quick Start
 
 ### Prerequisites
 - Docker & Docker Compose
-- Python 3.9+
-- Java 17+
-- Node.js 18+
+- Python 3.11+
 - Git
+- (Optional) Java 17+ for Product Service
+- (Optional) Node.js 18+ for Order Service
 
 ### Local Development
 
@@ -132,21 +138,26 @@ docker-compose up -d
 
 ### Pipeline Stages:
 
-1. **Build** - Compile and build all services
-2. **Unit Test** - Run unit tests with coverage reports
+1. **Code Quality** - Linting, formatting, security scanning
+2. **Unit Test** - Run unit tests with 85%+ coverage
 3. **Integration Test** - API contract and integration testing
-4. **Build Docker Images** - Create containerized services
+4. **Build Docker Images** - Create and push containerized services
 5. **E2E Test** - Run Selenium and Robot Framework tests
-6. **Security Scan** - Dependency and vulnerability scanning
-7. **Deploy to Staging** - Automated staging deployment
-8. **Performance Test** - Load testing on staging
-9. **Deploy to Production** - Manual approval gate
+6. **Deploy to Staging** - Automated staging deployment
+7. **Deploy to Production** - Environment-gated production deployment
 
 ### Pipeline Tools:
-- **Jenkins:** Primary CI/CD orchestration
+- **GitHub Actions:** Primary CI/CD (free, cloud-based)
 - **GitLab CI:** Alternative pipeline implementation
-- **SonarQube:** Code quality and coverage
-- **Docker Registry:** Container image storage
+- **Codecov:** Coverage reporting and tracking
+- **GitHub Container Registry:** Docker image storage
+
+### ✨ Why GitHub Actions?
+- ✅ No server setup required (cloud runners)
+- ✅ Free for public repositories
+- ✅ Integrated with GitHub (push → auto-deploy)
+- ✅ Industry standard for modern DevOps
+- ✅ Great for portfolio visibility
 
 ## 🧰 Technologies & Tools
 
@@ -195,11 +206,11 @@ Test results and coverage reports are automatically generated and published:
 
 ## 📝 Documentation
 
-- [Architecture Documentation](docs/architecture.md)
-- [Testing Strategy](docs/testing-strategy.md)
-- [Deployment Guide](docs/deployment-guide.md)
-- [API Documentation](docs/api-documentation.md)
-- [CI/CD Pipeline Guide](docs/ci-cd-guide.md)
+- [Getting Started Guide](docs/GETTING_STARTED.md) - Setup and installation
+- [Environment Configuration](docs/ENVIRONMENT_CONFIG.md) - Secrets and env vars
+- [Deployment to Render](docs/DEPLOY_RENDER.md) - Free cloud deployment
+- [Quick Reference](QUICK_REFERENCE.md) - Common commands
+- [Project Status](PROJECT_STATUS.md) - Implementation progress
 
 ## 🎓 Learning Outcomes
 
