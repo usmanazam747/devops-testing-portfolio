@@ -7,6 +7,11 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
 env:
   PYTHON_VERSION: '3.11'
   NODE_VERSION: '18'
@@ -101,15 +106,15 @@ jobs:
           DATABASE_URL: postgresql://test_user:test_password@localhost:5432/ecommerce_test
           REDIS_URL: redis://localhost:6379/0
           SECRET_KEY: test-secret-key-for-ci-only
+          PYTHONPATH: ${{ github.workspace }}/services/user-service
         run: |
-          cd services/user-service
-          pytest ../../tests/unit/test_user_service.py \
+          pytest tests/unit/test_user_service.py \
             -v \
-            --cov=app \
-            --cov-report=xml \
-            --cov-report=html \
+            --cov=services.user-service.app \
+            --cov-report=xml:services/user-service/coverage.xml \
+            --cov-report=html:services/user-service/htmlcov \
             --cov-report=term \
-            --junitxml=test-results.xml
+            --junitxml=services/user-service/test-results.xml
       
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
@@ -132,6 +137,7 @@ jobs:
         if: always()
         with:
           files: services/user-service/test-results.xml
+          check_name: Unit Test Results
 
   # Integration Tests
   integration-tests:
