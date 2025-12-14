@@ -60,10 +60,10 @@ class TestUserRegistrationIntegration:
         
         assert response.status_code == 201
         data = response.json()
-        assert 'user_id' in data
-        assert data['username'] == user_data['username']
-        assert data['email'] == user_data['email']
-        assert 'password' not in data  # Password should never be returned
+        assert 'user' in data
+        assert data['user']['username'] == user_data['username']
+        assert data['user']['email'] == user_data['email']
+        assert 'password' not in data['user']  # Password should never be returned
     
     def test_register_duplicate_username(self, wait_for_service):
         """Test that duplicate username is rejected"""
@@ -81,7 +81,7 @@ class TestUserRegistrationIntegration:
         # Second registration with same username should fail
         user_data['email'] = f'user2_{int(time.time())}@example.com'
         response2 = requests.post(f"{BASE_URL}/api/users/register", json=user_data)
-        assert response2.status_code == 400
+        assert response2.status_code == 409
         assert 'already exists' in response2.json()['error'].lower()
     
     def test_register_duplicate_email(self, wait_for_service):
@@ -100,7 +100,7 @@ class TestUserRegistrationIntegration:
         # Second registration with same email should fail
         user_data['username'] = f'user2_{int(time.time())}'
         response2 = requests.post(f"{BASE_URL}/api/users/register", json=user_data)
-        assert response2.status_code == 400
+        assert response2.status_code == 409
         assert 'already exists' in response2.json()['error'].lower()
     
     def test_register_invalid_email(self, wait_for_service):
@@ -150,12 +150,12 @@ class TestUserLoginIntegration:
         
         assert response.status_code == 200
         data = response.json()
-        assert 'access_token' in data
+        assert 'token' in data
         assert 'user' in data
         assert data['user']['username'] == registered_user['username']
         
         # Verify token is a valid JWT format (has 3 parts separated by dots)
-        token = data['access_token']
+        token = data['token']
         assert len(token.split('.')) == 3
     
     def test_login_wrong_password(self, registered_user):
@@ -203,9 +203,9 @@ class TestAuthenticatedEndpointsIntegration:
         assert login_response.status_code == 200
         
         return {
-            'token': login_response.json()['access_token'],
+            'token': login_response.json()['token'],
             'user_data': user_data,
-            'user_id': reg_response.json()['user_id']
+            'user_id': reg_response.json()['user']['id']
         }
     
     def test_get_user_profile(self, authenticated_user):
@@ -284,18 +284,18 @@ class TestDatabasePersistence:
         }
         login_response1 = requests.post(f"{BASE_URL}/api/users/login", json=login_data)
         assert login_response1.status_code == 200
-        token1 = login_response1.json()['access_token']
+        token1 = login_response1.json()['token']
         
         # Login second time (should retrieve same user from DB)
         login_response2 = requests.post(f"{BASE_URL}/api/users/login", json=login_data)
         assert login_response2.status_code == 200
-        token2 = login_response2.json()['access_token']
+        token2 = login_response2.json()['token']
         
         # Both tokens should be valid (different tokens, same user)
         headers1 = {'Authorization': f"Bearer {token1}"}
         headers2 = {'Authorization': f"Bearer {token2}"}
         
-        user_id = reg_response.json()['user_id']
+        user_id = reg_response.json()['user']['id']
         
         response1 = requests.get(f"{BASE_URL}/api/users/{user_id}", headers=headers1)
         response2 = requests.get(f"{BASE_URL}/api/users/{user_id}", headers=headers2)
