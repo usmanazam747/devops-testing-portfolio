@@ -113,7 +113,7 @@ class TestUserRegistrationIntegration:
         assert 'already exists' in error_msg or 'duplicate' in error_msg
     
     def test_register_invalid_email(self, wait_for_service):
-        """Test that invalid email format is accepted (API doesn't validate format)"""
+        """Test that invalid email format is accepted (API does not validate format)"""
         user_data = {
             'username': f'testuser_{int(time.time())}',
             'email': 'invalid-email',
@@ -266,7 +266,7 @@ class TestAuthenticatedEndpointsIntegration:
         assert response.status_code == 401
     
     def test_access_other_user_profile(self, authenticated_user):
-        """Test that users cannot access other users' profiles"""
+        """Test that users cannot access other users profiles"""
         headers = {'Authorization': f"Bearer {authenticated_user['token']}"}
         
         # Try to access user with different ID
@@ -343,3 +343,5 @@ class TestErrorHandling:
         """Test accessing non-existent endpoint"""
         response = requests.get(f"{BASE_URL}/nonexistent")
         assert response.status_code == 404
+        assert response.status_code == 404
+
