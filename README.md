@@ -237,8 +237,8 @@ This project demonstrates proficiency in:
 
 **Your Name**  
 Email: your.email@example.com  
-LinkedIn: [your-profile](https://linkedin.com/in/your-profile)  
-Portfolio: [your-website.com](https://your-website.com)
+LinkedIn: [your-profile](www.linkedin.com/in/usmanazam74)  
+Portfolio: [your-website.com]((https://github.com/usmanazam747))
 
 ## 📜 License
 
