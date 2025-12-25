@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Portfolio - API Documentation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #764ba2;
+            margin-top: 30px;
+        }
+        .service-card {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .endpoint {
+            background: #e9ecef;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+        }
+        .method {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .get { background: #28a745; }
+        .post { background: #007bff; }
+        .put { background: #ffc107; color: #333; }
+        .delete { background: #dc3545; }
+        .swagger-link {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 10px 10px 0;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .swagger-link:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .setup-instructions {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        .tech-badge {
+            display: inline-block;
+            background: #764ba2;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px;
+            margin: 5px 5px 5px 0;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 DevOps Testing Portfolio - API Documentation</h1>
+        <p><strong>Phase 2 Enhanced</strong> - Multi-Language Microservices with OpenAPI/Swagger Documentation</p>
+
+        <div class="note">
+            <strong>📝 Note:</strong> To view interactive Swagger UI, you need to start the services locally:
+            <ol>
+                <li>Using Docker: <code>docker-compose up -d</code></li>
+                <li>Manually: Start each service individually with proper environment variables</li>
+            </ol>
+        </div>
+
+        <!-- Product Service -->
+        <div class="service-card">
+            <h2>🛍️ Product Service (Java/Spring Boot)</h2>
+            <p><strong>Port:</strong> 8080 | <strong>Base URL:</strong> <code>http://localhost:8080</code></p>
+            
+            <div style="margin: 15px 0;">
+                <span class="tech-badge">Java 17</span>
+                <span class="tech-badge">Spring Boot 3.2</span>
+                <span class="tech-badge">PostgreSQL</span>
+                <span class="tech-badge">JPA</span>
+                <span class="tech-badge">springdoc-openapi</span>
+            </div>
+
+            <h3>Swagger UI Links:</h3>
+            <a href="http://localhost:8080/swagger-ui.html" class="swagger-link" target="_blank">
+                📖 Interactive Swagger UI
+            </a>
+            <a href="http://localhost:8080/v3/api-docs" class="swagger-link" target="_blank">
+                📄 OpenAPI JSON Spec
+            </a>
+
+            <h3>Available Endpoints:</h3>
+            
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <strong>/api/products</strong> - Get all products
+            </div>
+            
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <strong>/api/products/{id}</strong> - Get product by ID
+            </div>
+            
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <strong>/api/products</strong> - Create new product
+            </div>
+            
+            <div class="endpoint">
+                <span class="method put">PUT</span>
+                <strong>/api/products/{id}</strong> - Update product
+            </div>
+            
+            <div class="endpoint">
+                <span class="method delete">DELETE</span>
+                <strong>/api/products/{id}</strong> - Delete product (soft delete)
+            </div>
+            
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <strong>/api/products/search?keyword=laptop</strong> - Search products
+            </div>
+            
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <strong>/api/products/category/Electronics</strong> - Filter by category
+            </div>
+            
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <strong>/api/products/low-stock?threshold=10</strong> - Get low-stock products
+            </div>
+            
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <strong>/actuator/health</strong> - Health check
+            </div>
+        </div>
+
+        <!-- User Service -->
+        <div class="service-card">
+            <h2>👤 User Service (Python/Flask)</h2>
+            <p><strong>Port:</strong> 5000 | <strong>Base URL:</strong> <code>http://localhost:5000</code></p>
+            
+            <div style="margin: 15px 0;">
+                <span class="tech-badge">Python 3.11</span>
+                <span class="tech-badge">Flask 3.0</span>
+                <span class="tech-badge">PostgreSQL</span>
+                <span class="tech-badge">JWT Auth</span>
+            </div>
+
+            <h3>Available Endpoints:</h3>
+            
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <strong>/api/users/register</strong> - Register new user
+            </div>
+            
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <strong>/api/users/login</strong> - User login (returns JWT token)
+            </div>
+            
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <strong>/api/users/{id}</strong> - Get user by ID (requires JWT)
+            </div>
+            
+            <div class="endpoint">
+                <span class="method put">PUT</span>
+                <strong>/api/users/{id}</strong> - Update user (requires JWT)
+            </div>
+            
+            <div class="endpoint">
+                <span class="method delete">DELETE</span>
+                <strong>/api/users/{id}</strong> - Delete user (requires JWT)
+            </div>
+            
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <strong>/api/users</strong> - Get all users (requires JWT)
+            </div>
+            
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <strong>/health</strong> - Health check
+            </div>
+        </div>
+
+        <!-- Setup Instructions -->
+        <div class="setup-instructions">
+            <h2>🔧 How to Start Services</h2>
+            
+            <h3>Option 1: Docker Compose (Recommended)</h3>
+            <pre><code>cd C:\Users\usman\devops-testing-portfolio
+docker-compose up -d
+
+# Access Swagger UI
+# Product Service: http://localhost:8080/swagger-ui.html
+# User Service: http://localhost:5000</code></pre>
+
+            <h3>Option 2: Manual Start</h3>
+            
+            <p><strong>Product Service (Java):</strong></p>
+            <pre><code>cd services/product-service
+mvn spring-boot:run
+
+# Access: http://localhost:8080/swagger-ui.html</code></pre>
+
+            <p><strong>User Service (Python):</strong></p>
+            <pre><code>cd services/user-service
+pip install -r requirements.txt
+set SECRET_KEY=dev-secret-key
+set DATABASE_URL=sqlite:///test.db
+python app.py
+
+# Access: http://localhost:5000</code></pre>
+        </div>
+
+        <!-- Sample API Calls -->
+        <div class="service-card">
+            <h2>🧪 Sample API Calls (cURL)</h2>
+            
+            <h3>Product Service:</h3>
+            <pre><code># Create a product
+curl -X POST http://localhost:8080/api/products \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Laptop",
+    "description": "High-performance laptop",
+    "price": 1299.99,
+    "stock": 50,
+    "category": "Electronics",
+    "imageUrl": "https://example.com/laptop.jpg"
+  }'
+
+# Get all products
+curl http://localhost:8080/api/products
+
+# Search products
+curl "http://localhost:8080/api/products/search?keyword=laptop"</code></pre>
+
+            <h3>User Service:</h3>
+            <pre><code># Register a user
+curl -X POST http://localhost:5000/api/users/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "john_doe",
+    "email": "john@example.com",
+    "password": "SecurePass123"
+  }'
+
+# Login
+curl -X POST http://localhost:5000/api/users/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "john_doe",
+    "password": "SecurePass123"
+  }'</code></pre>
+        </div>
+
+        <div class="note">
+            <strong>💡 Tip:</strong> The Product Service has the most complete Swagger documentation. 
+            After starting it with <code>docker-compose up product-service postgres</code>, 
+            visit <a href="http://localhost:8080/swagger-ui.html" target="_blank">http://localhost:8080/swagger-ui.html</a>
+            for an interactive API testing interface!
+        </div>
+
+        <hr style="margin: 30px 0;">
+        
+        <p style="text-align: center; color: #666;">
+            <strong>DevOps Testing Portfolio</strong> | Phase 2 Enhanced<br>
+            Multi-Language Microservices | CI/CD Pipeline | Docker | Kubernetes Ready
+        </p>
+    </div>
+</body>
+</html>
