@@ -1,8 +1,14 @@
 # DevOps Testing Portfolio - E-Commerce Platform
 
-[![CI/CD Pipeline](https://img.shields.io/badge/CI%2FCD-Active-brightgreen)]()
-[![Test Coverage](https://img.shields.io/badge/Coverage-85%25-green)]()
-[![Docker](https://img.shields.io/badge/Docker-Ready-blue)]()
+[![CI/CD Pipeline](https://github.com/usmanazam747/devops-testing-portfolio/actions/workflows/ci-cd-enhanced.yml/badge.svg)](https://github.com/usmanazam747/devops-testing-portfolio/actions/workflows/ci-cd-enhanced.yml)
+[![Python](https://img.shields.io/badge/Python-3.11-blue.svg)](https://www.python.org/)
+[![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://www.oracle.com/java/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.0-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-usmanazam74-0077B5.svg)](https://www.linkedin.com/in/usmanazam74)
+[![GitHub](https://img.shields.io/badge/GitHub-usmanazam747-181717.svg)](https://github.com/usmanazam747)
+
+> **Phase 2 Enhanced** - Multi-Language Microservices | Performance Testing | OpenAPI Documentation
 
 ## 🎯 Project Overview
 
