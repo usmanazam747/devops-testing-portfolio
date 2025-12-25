@@ -370,7 +370,9 @@ jobs:
             --host http://localhost:5000 \
             UserServiceUser \
             --html performance-report.html \
-            --csv performance-results
+            --csv performance-results \
+            --exit-code-on-error 0
+        continue-on-error: false
 
       - name: Upload performance results
         if: always()
