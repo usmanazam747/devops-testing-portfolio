@@ -368,6 +368,7 @@ jobs:
             --spawn-rate 5 \
             --run-time 2m \
             --host http://localhost:5000 \
+            UserServiceUser \
             --html performance-report.html \
             --csv performance-results
 
