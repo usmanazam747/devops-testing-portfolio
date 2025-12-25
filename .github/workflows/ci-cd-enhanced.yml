@@ -317,7 +317,8 @@ jobs:
     name: Performance Tests (Locust)
     runs-on: ubuntu-latest
     needs: [integration-tests]
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop') && !startsWith(github.ref, 'refs/heads/feature/')
+    if: github.event_name == 'push'
+    # Runs on all branches for portfolio demonstration
 
     services:
       postgres:
